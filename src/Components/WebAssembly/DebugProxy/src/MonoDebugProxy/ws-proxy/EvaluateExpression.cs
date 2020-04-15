@@ -38,7 +38,7 @@ namespace WebAssembly.Net.Debugging {
 					base.Visit (node);
 			}
 
-			public async Task CheckIfIsProperty (MonoProxy proxy, MessageId msg_id, int scope_id, CancellationToken token) 
+			public async Task CheckIfIsProperty (MonoProxy proxy, MessageId msg_id, int scope_id, CancellationToken token)
 			{
 				foreach (var var in thisExpressions) {
 					JToken value = await proxy.TryGetVariableValue (msg_id, scope_id, var, true, token);
@@ -136,7 +136,7 @@ namespace WebAssembly.Net.Debugging {
 				{
 					public string Evaluate()
 					{
-						return (" + expression + @").ToString(); 
+						return (" + expression + @").ToString();
 					}
 				}");
 

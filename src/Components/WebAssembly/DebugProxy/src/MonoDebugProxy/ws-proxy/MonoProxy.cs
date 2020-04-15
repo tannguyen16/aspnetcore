@@ -490,9 +490,9 @@ namespace WebAssembly.Net.Debugging {
 			var context = GetContext (msg_id);
 			if (context.CallStack == null)
 				return null;
-			
+
 			if (TryFindVariableValueInCache(context, expression, only_search_on_this, out JToken obj))
-				return obj;				
+				return obj;
 
 			var scope = context.CallStack.FirstOrDefault (s => s.Id == scope_id);
 			var vars = scope.Method.GetLiveVarsAt (scope.Location.CliLocation.Offset);
@@ -501,7 +501,7 @@ namespace WebAssembly.Net.Debugging {
 			var res = await SendMonoCommand (msg_id, MonoCommands.GetScopeVariables (scope.Id, var_ids), token);
 			var values = res.Value? ["result"]? ["value"]?.Values<JObject> ().ToArray ();
 			thisValue = values.FirstOrDefault (v => v ["name"].Value<string> () == "this");
-			
+
 			if (!only_search_on_this) {
 				if (thisValue != null && expression == "this") {
 					return thisValue;
