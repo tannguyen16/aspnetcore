@@ -9,6 +9,10 @@
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <Reference Include="System.Net.Http.Json" />
+
+    <ProjectReference
+      Include="..\..\WebAssemblyHttpHandler\src\Microsoft.AspNetCore.Components.WebAssembly.HttpHandler.csproj"
+      CopyLocal="false" />
   </ItemGroup>
 
   <!-- A bit of msbuild magic to support reference resolver tests -->
@@ -25,6 +29,19 @@
     <ItemGroup>
       <EmbeddedResource Include="$(IntermediateOutputPath)bclLocations.txt" Link="bclLocations.txt" Type="Non-Resx" />
       <EmbeddedResource Include="$(IntermediateOutputPath)referenceHints.txt" Link="referenceHints.txt" Type="Non-Resx" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_FixupRefAssembly" AfterTargets="_ResolveBlazorInputs" BeforeTargets="_ResolveBlazorOutputs">
+    <!--
+      ProjectReference doesn't really play well with IncludeAssets behavior you get when referencing
+      the package with IncludeAssets="compile".
+    -->
+    <ItemGroup>
+      <_HttpHandlerAssembly Include="@(_BlazorUserRuntimeAssembly)"
+        Condition="%(_BlazorUserRuntimeAssembly.ProjectReferenceOriginalItemSpec) == '..\..\WebAssemblyHttpHandler\src\Microsoft.AspNetCore.Components.WebAssembly.HttpHandler.csproj'" />
+
+      <_BlazorUserRuntimeAssembly Remove="@(_HttpHandlerAssembly)" />
     </ItemGroup>
   </Target>
 
